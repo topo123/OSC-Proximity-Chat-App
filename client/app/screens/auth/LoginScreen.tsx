@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { ArrowLeftCircle } from "react-native-feather";
+import { getAuth, signInWithCredential, GoogleAuthProvider } from "@firebase/auth"
+import { GoogleSignin } from "@react-native-google-signin/google-signin"
 
 import {
   LogInButton,
@@ -54,7 +56,21 @@ const LoginScreen = ({ route, navigation }: any) => {
   }, []);
 
   const handleGoogleSignIn = async () => {
-    console.log("Google Sign In");
+    const google = new GoogleAuthProvider();
+    const auth = getAuth();
+
+    GoogleSignin.configure({
+      webClientId: '278942710415-rh8ebf64a4hkuf90q8d2omju82gn0jal.apps.googleusercontent.com',
+    });
+
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    const userInfo = await GoogleSignin.signIn();
+    const tokens = await GoogleSignin.getTokens();
+
+    const credential = GoogleAuthProvider.credential(tokens.idToken);
+
+    signInWithCredential(auth, credential);
+
   };
 
   const handleFacebookSignIn = async () => {
